@@ -1,3 +1,10 @@
 main: dev.theposch.mcserverreload.ServerReloadPlugin
 name: HotReload
 version: 0.0.1
+author: TheBitFighter
+commands:
+  bing:
+    description: Tests the plugin response
+    usage: /bing
+    permission: hotreload.bing
+    permission-message: You're not bong enough to bing!

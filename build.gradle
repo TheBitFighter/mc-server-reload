@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 group 'dev.theposch'
@@ -32,6 +33,6 @@ compileTestKotlin {
 }
 
 task deployToServer(type: Copy) {
-    from file("$buildDir/libs/mc-server-reload-1.0-SNAPSHOT.jar")
+    from file("$buildDir/libs/mc-server-reload-1.0-SNAPSHOT-all.jar")
     into file("$buildDir/../../Server/plugins/")
 }
