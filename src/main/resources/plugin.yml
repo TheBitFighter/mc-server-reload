@@ -1,0 +1,3 @@
+main: dev.theposch.mcserverreload.ServerReloadPlugin
+name: HotReload
+version: 0.0.1
