@@ -13,11 +13,14 @@ import org.http4k.server.Http4kServer
 import org.http4k.server.Jetty
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
+import java.net.BindException
+import kotlin.concurrent.thread
 
 
 class ServerReloadPlugin : JavaPlugin() {
 
     private var server : Http4kServer? = null
+    private var isShutdown : Boolean = false
 
     override fun onEnable() {
         // Save the default configuration if not yet present
@@ -30,10 +33,12 @@ class ServerReloadPlugin : JavaPlugin() {
         // Try to start the server
         try {
             server = startServer(port)
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             logger.info(e.printStackTrace().toString())
             logger.info("Could not start server on port $port")
+
         }
+
     }
 
     override fun onDisable() {
@@ -58,7 +63,6 @@ class ServerReloadPlugin : JavaPlugin() {
     }
 
     private fun startServer (port:Int) : Http4kServer {
-
         // Reload handler
         val reloadHandler : HttpHandler = {_ -> Response(OK).body("reloading...") }
 
