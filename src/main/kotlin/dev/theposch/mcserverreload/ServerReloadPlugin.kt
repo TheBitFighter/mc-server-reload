@@ -3,6 +3,8 @@ package dev.theposch.mcserverreload
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.OK
@@ -17,7 +19,7 @@ import java.net.BindException
 import kotlin.concurrent.thread
 
 
-class ServerReloadPlugin : JavaPlugin() {
+class ServerReloadPlugin : JavaPlugin(), Listener {
 
     private var server : Http4kServer? = null
     private var isShutdown : Boolean = false
@@ -39,6 +41,8 @@ class ServerReloadPlugin : JavaPlugin() {
 
         }
 
+        getServer().pluginManager.registerEvents(this, this)
+
     }
 
     override fun onDisable() {
@@ -48,18 +52,9 @@ class ServerReloadPlugin : JavaPlugin() {
         logger.info("Server stopped!")
     }
 
-    override fun onCommand(
-        sender: CommandSender?,
-        command: Command?,
-        label: String?,
-        args: Array<out String>?
-    ): Boolean {
-        if (command?.name.equals("hotreload", true)) {
-            logger.info("Command fired")
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "reload")
-            return true
-        }
-        return false
+    @EventHandler
+    fun reloadHandler (event:ReloadEvent) {
+        logger.info("Reload event!")
     }
 
     private fun startServer (port:Int) : Http4kServer {
@@ -74,8 +69,10 @@ class ServerReloadPlugin : JavaPlugin() {
             next: HttpHandler -> {
                 request: Request ->
                 val response = next(request)
+                val event = ReloadEvent("Test")
+                Bukkit.getServer().pluginManager.callEvent(event)
                 logger.info("Reload triggered!")
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "reload")
+                //Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "reload")
                 response
             }
         }
